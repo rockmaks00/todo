@@ -31,7 +31,7 @@ export default function Register() {
       })
       .catch (error => {
         const response = error.response;
-        if (response && response.status == 422) {
+        if (response?.status == 422) {
           console.log(response.data.errors);
         }
       })
