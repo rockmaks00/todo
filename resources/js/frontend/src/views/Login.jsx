@@ -6,15 +6,34 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import { useStateContext } from '../contexts/ContextProvider';
+import axiosClient from '../axios-client';
 
 export default function Login() {
+  const { setUser, setToken } = useStateContext()
+  const [error, setErrors] = useState()
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+
+    const payload = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+    }
+
+    axiosClient.post('/login', payload)
+      .then(({ data }) => {
+        setUser(data.user);
+        setToken(data.token)
+      })
+      .catch(error => {
+        const response = error.response;
+        if (response?.status == 422) {
+          setErrors(response.data.errors);
+        }
+      })
   };
 
   return (
@@ -24,6 +43,8 @@ export default function Login() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
+          error={Boolean(error?.email)}
+          helperText={error?.email}
           margin="normal"
           required
           fullWidth
@@ -34,6 +55,8 @@ export default function Login() {
           autoFocus
         />
         <TextField
+          error={Boolean(error?.password)}
+          helperText={error?.password}
           margin="normal"
           required
           fullWidth

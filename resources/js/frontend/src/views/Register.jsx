@@ -7,9 +7,11 @@ import Typography from '@mui/material/Typography';
 import { MenuItem } from '@mui/material';
 import axiosClient from '../axios-client.js';
 import { useStateContext } from "../contexts/ContextProvider";
+import { useState } from 'react';
 
 export default function Register() {
-  const {setUser, setToken} = useStateContext()
+  const { setUser, setToken } = useStateContext()
+  const [error, setErrors] = useState()
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,18 +23,19 @@ export default function Register() {
       patronymic: data.get('patronymic'),
       email: data.get('email'),
       password: data.get('password'),
+      password_confirmation: data.get('passwordConfirm'),
       leader: data.get('leader'),
     }
 
     axiosClient.post('/register', payload)
-      .then(({data}) => {
+      .then(({ data }) => {
         setUser(data.user);
         setToken(data.token)
       })
-      .catch (error => {
+      .catch(error => {
         const response = error.response;
         if (response?.status == 422) {
-          console.log(response.data.errors);
+          setErrors(response.data.errors);
         }
       })
   };
@@ -44,6 +47,8 @@ export default function Register() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
+          error={Boolean(error?.name)}
+          helperText={error?.name}
           margin="normal"
           required
           fullWidth
@@ -54,6 +59,8 @@ export default function Register() {
           autoFocus
         />
         <TextField
+          error={Boolean(error?.surname)}
+          helperText={error?.surname}
           margin="normal"
           required
           fullWidth
@@ -63,6 +70,8 @@ export default function Register() {
           autoComplete="surname"
         />
         <TextField
+          error={Boolean(error?.patronymic)}
+          helperText={error?.patronymic}
           margin="normal"
           required
           fullWidth
@@ -72,6 +81,8 @@ export default function Register() {
           autoComplete="patronymic"
         />
         <TextField
+          error={Boolean(error?.email)}
+          helperText={error?.email}
           margin="normal"
           required
           fullWidth
@@ -81,6 +92,8 @@ export default function Register() {
           autoComplete="email"
         />
         <TextField
+          error={Boolean(error?.password)}
+          helperText={error?.password}
           margin="normal"
           required
           fullWidth
@@ -91,6 +104,19 @@ export default function Register() {
           autoComplete="new-password"
         />
         <TextField
+          error={Boolean(error?.password_confirmation)}
+          helperText={error?.password_confirmation}
+          margin="normal"
+          required
+          fullWidth
+          name="passwordConfirm"
+          label="Подтвердите пароль"
+          type="password"
+          id="passwordConfirm"
+        />
+        <TextField
+          error={Boolean(error?.leader)}
+          helperText={error?.leader}
           fullWidth
           id="leader"
           select

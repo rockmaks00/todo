@@ -33,16 +33,11 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): Response
     {
         $data = $request->validated();
-        
+
+        $data['password'] = Hash::make($data['password']);
+
         /** @var User $user */
-        $user = User::create([
-            'name' => $data->name,
-            'surname' => $data->surname,
-            'patronymic' => $data->patronymic,
-            'email' => $data->email,
-            'password' => Hash::make($data->password),
-            'leader' => empty($data->leader) ? null : $data->leader
-        ]);
+        $user = User::create($data);
 
         $token = $user->createToken('main')->plainTextToken;
 
