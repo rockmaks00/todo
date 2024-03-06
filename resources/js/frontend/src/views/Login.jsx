@@ -23,7 +23,7 @@ export default function Login() {
       password: data.get('password'),
     }
 
-    axiosClient.post('/login', payload)
+    axiosClient.post('/auth/login', payload)
       .then(({ data }) => {
         setUser(data.user);
         setToken(data.token)

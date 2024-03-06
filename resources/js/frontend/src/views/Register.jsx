@@ -27,7 +27,7 @@ export default function Register() {
       leader: data.get('leader'),
     }
 
-    axiosClient.post('/register', payload)
+    axiosClient.post('/auth/register', payload)
       .then(({ data }) => {
         setUser(data.user);
         setToken(data.token)
