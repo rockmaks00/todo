@@ -1,21 +1,21 @@
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { MenuItem } from '@mui/material';
-import axiosClient from '../axios-client.js';
-import { useStateContext } from "../contexts/ContextProvider";
-import { useState } from 'react';
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { MenuItem } from '@mui/material'
+import axiosClient from '../axios-client.js'
+import { useStateContext } from '../contexts/ContextProvider'
+import { useState } from 'react'
 
 export default function Register() {
   const { setUser, setToken } = useStateContext()
   const [error, setErrors] = useState()
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
 
     const payload = {
       name: data.get('name'),
@@ -27,18 +27,19 @@ export default function Register() {
       leader: data.get('leader'),
     }
 
-    axiosClient.post('/auth/register', payload)
+    axiosClient
+      .post('/auth/register', payload)
       .then(({ data }) => {
-        setUser(data.user);
+        setUser(data.user)
         setToken(data.token)
       })
-      .catch(error => {
-        const response = error.response;
+      .catch((error) => {
+        const response = error.response
         if (response?.status == 422) {
-          setErrors(response.data.errors);
+          setErrors(response.data.errors)
         }
       })
-  };
+  }
 
   return (
     <>
@@ -138,11 +139,11 @@ export default function Register() {
         <Grid container>
           <Grid item>
             <Link href="/login" variant="body2">
-              {"Уже есть аккаунт? Войти"}
+              {'Уже есть аккаунт? Войти'}
             </Link>
           </Grid>
         </Grid>
       </Box>
     </>
-  );
+  )
 }

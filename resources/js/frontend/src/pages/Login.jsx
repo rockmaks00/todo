@@ -1,40 +1,41 @@
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { useState } from 'react';
-import { useStateContext } from '../contexts/ContextProvider';
-import axiosClient from '../axios-client';
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { useState } from 'react'
+import { useStateContext } from '../contexts/ContextProvider'
+import axiosClient from '../axios-client'
 
 export default function Login() {
   const { setUser, setToken } = useStateContext()
   const [error, setErrors] = useState()
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
 
     const payload = {
       email: data.get('email'),
       password: data.get('password'),
     }
 
-    axiosClient.post('/auth/login', payload)
+    axiosClient
+      .post('/auth/login', payload)
       .then(({ data }) => {
-        setUser(data.user);
+        setUser(data.user)
         setToken(data.token)
       })
-      .catch(error => {
-        const response = error.response;
+      .catch((error) => {
+        const response = error.response
         if (response?.status == 422) {
-          setErrors(response.data.errors);
+          setErrors(response.data.errors)
         }
       })
-  };
+  }
 
   return (
     <>
@@ -81,11 +82,11 @@ export default function Login() {
         <Grid container>
           <Grid item>
             <Link href="/register" variant="body2">
-              {"Нет аккаунта? Регистрация"}
+              {'Нет аккаунта? Регистрация'}
             </Link>
           </Grid>
         </Grid>
       </Box>
     </>
-  );
+  )
 }

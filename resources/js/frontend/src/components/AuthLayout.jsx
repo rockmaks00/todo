@@ -1,13 +1,13 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useStateContext } from "../contexts/ContextProvider";
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { Avatar } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import CssBaseline from '@mui/material/CssBaseline';
+import { Navigate, Outlet } from 'react-router-dom'
+import { useStateContext } from '../contexts/ContextProvider'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import { Avatar } from '@mui/material'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import CssBaseline from '@mui/material/CssBaseline'
 
 export default function AuthLayout() {
-  const { token } = useStateContext();
+  const { token } = useStateContext()
 
   if (token) {
     return <Navigate to="/tasks" />
