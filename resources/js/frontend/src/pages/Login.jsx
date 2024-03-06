@@ -8,10 +8,8 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useStateContext } from '../contexts/ContextProvider'
-import axiosClient from '../lib/axios-client'
-
 export default function Login() {
-  const { setUser, setToken } = useStateContext()
+  const { axiosClient, setUser, setToken } = useStateContext()
   const [error, setErrors] = useState()
 
   const handleSubmit = (event) => {

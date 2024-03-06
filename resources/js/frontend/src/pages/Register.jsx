@@ -5,12 +5,11 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { MenuItem } from '@mui/material'
-import axiosClient from '../lib/axios-client.js'
 import { useStateContext } from '../contexts/ContextProvider'
 import { useState } from 'react'
 
 export default function Register() {
-  const { setUser, setToken } = useStateContext()
+  const { axiosClient, setUser, setToken } = useStateContext()
   const [error, setErrors] = useState()
 
   const handleSubmit = (event) => {

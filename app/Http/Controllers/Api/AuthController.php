@@ -14,12 +14,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): Response
     {
-        $credentials = $request->validated();
-        if (!Auth::attempt($credentials)) {
-            return response([
-                'message' => 'amogus'
-            ]);
-        }
+        $request->authenticate();
 
         /** @var User $user */
         $user = Auth::user();

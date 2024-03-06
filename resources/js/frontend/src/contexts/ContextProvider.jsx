@@ -1,3 +1,4 @@
+import axios from 'axios'
 import propTypes from 'prop-types'
 import { createContext, useContext, useState } from 'react'
 
@@ -9,8 +10,17 @@ const StateContext = createContext({
 })
 
 export const ContextProvider = ({ children }) => {
+  const axiosClient = axios.create({
+    baseURL: '/api',
+  })
+
   const [user, setUser] = useState({})
   const [token, _setToken] = useState(localStorage.getItem('ACCESS_TOKEN'))
+
+  axiosClient.interceptors.request.use((config) => {
+    config.headers.Authorization = `Bearer ${token}`
+    return config
+  })
 
   const setToken = (token) => {
     _setToken(token)
@@ -24,6 +34,7 @@ export const ContextProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
+        axiosClient,
         user,
         token,
         setUser,
