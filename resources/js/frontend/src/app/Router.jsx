@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Tasks from './views/Tasks';
-import TasksLayout from '../src/components/TasksLayout';
-import AuthLayout from '../src/components/AuthLayout';
+import TasksLayout from '../components/TasksLayout';
+import AuthLayout from '../components/AuthLayout';
 import Login from './views/Login';
 import Register from './views/Register';
 
