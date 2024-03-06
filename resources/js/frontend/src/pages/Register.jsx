@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { MenuItem } from '@mui/material'
-import axiosClient from '../axios-client.js'
+import axiosClient from '../lib/axios-client.js'
 import { useStateContext } from '../contexts/ContextProvider'
 import { useState } from 'react'
 

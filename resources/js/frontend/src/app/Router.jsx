@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
-import Tasks from './views/Tasks'
+import Tasks from '../pages/Tasks'
 import TasksLayout from '../components/TasksLayout'
 import AuthLayout from '../components/AuthLayout'
-import Login from './views/Login'
-import Register from './views/Register'
+import Login from '../pages/Login'
+import Register from '../pages/Register'
 
 const router = createBrowserRouter([
   {

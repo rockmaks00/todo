@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useStateContext } from '../contexts/ContextProvider'
-import axiosClient from '../axios-client'
+import axiosClient from '../lib/axios-client'
 
 export default function Login() {
   const { setUser, setToken } = useStateContext()
