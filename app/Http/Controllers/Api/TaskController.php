@@ -7,12 +7,30 @@ use App\Http\Requests\Api\Task\CreateTaskRequest;
 use App\Http\Requests\Api\Task\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
+use App\Static\Enumerables\Priority;
 use App\Static\Enumerables\Status;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
+    /**
+     * Заполняет указанные поля с помощью enum
+     *
+     * @param array $enums ['modelField' => 'ENumClass']
+     */
+    public static function setEnums(array $model, array $enums): array
+    {
+        foreach ($enums as $key => $name) {
+            $enum = ($name)::from($model[$key]);
+            $model[$key] = [
+                'id' => $enum->value,
+                'name' => $enum->label(),
+            ];
+        }
+        return $model;
+    }
+
     public function get(Request $request): Response
     {
         $userId = $request->user()->id;
@@ -20,7 +38,15 @@ class TaskController extends Controller
             ->orWhere('creator', $userId)
             ->with('responsible')
             ->orderByDesc('updated_at')
-            ->get();
+            ->get()
+            ->toArray();
+
+        foreach ($tasks as &$task) {
+            $task = static::setEnums($task, [
+                'status' => Status::class,
+                'priority' => Priority::class
+            ]);
+        }
 
         return response($tasks);
     }

@@ -33,9 +33,6 @@ export default function TasksLayout() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Здравствуйте, {user.name}
           </Typography>
-          <Button color="inherit" variant="outlined" sx={{ mr: 1 }}>
-            Новая задача
-          </Button>
           <Button color="inherit" onClick={onLogout}>
             Выйти
           </Button>

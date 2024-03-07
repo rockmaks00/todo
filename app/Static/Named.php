@@ -12,7 +12,7 @@ trait Named
     /**
      * Возвращает имя объекта
      */
-    public function name(): string
+    public function label(): string
     {
         return static::names()[$this->value];
     }
