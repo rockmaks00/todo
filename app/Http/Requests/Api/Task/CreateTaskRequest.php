@@ -11,7 +11,7 @@ class CreateTaskRequest extends TaskRequest
 {
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     public function rules(): array

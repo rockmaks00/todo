@@ -15,7 +15,7 @@ use Illuminate\Http\Response;
 class TaskController extends Controller
 {
     /**
-     * Заполняет указанные поля с помощью enum
+     * Заполняет указанные поля с помощью enum / по возможности вынести в сериализатор
      *
      * @param array $enums ['modelField' => 'ENumClass']
      */
@@ -46,6 +46,7 @@ class TaskController extends Controller
                 'status' => Status::class,
                 'priority' => Priority::class
             ]);
+            $task['deadline'] = date('d.m.Y', strtotime($task['deadline']));
         }
 
         return response($tasks);
@@ -54,6 +55,7 @@ class TaskController extends Controller
     public function getTask(int $id): Response
     {
         $task = Task::find($id);
+        $task['deadline'] = date('Y-m-d', strtotime($task['deadline']));
         return response($task);
     }
 
@@ -79,17 +81,19 @@ class TaskController extends Controller
         /** @var Task */
         $task = Task::find($data['id']);
 
+        // проверяем является ли пользователь создателем
+        if ($task->creator()->first()->id === $user->id) {
+            $task->update($data);
+            $task->save();
+            return response(status: 201);
+        }
+
+        // или ответственным
         if ($task->responsible()->first()->id === $user->id) {
             if ($task->status !== $data['status']) {
                 $task->status = $data['status'];
                 $task->save();
             }
-            return response(status: 201);
-        }
-
-        if ($task->creator()->first()->id === $user->id) {
-            $task->update($data);
-            $task->save();
             return response(status: 201);
         }
 

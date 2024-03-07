@@ -17,7 +17,7 @@ abstract class TaskRequest extends FormRequest
         $user = Auth::user();
         $responsible = $user->subordinates()->find($data['responsible']);
 
-        if (empty($responsible)) {
+        if (empty($responsible) && $data['responsible'] != $user->id) {
             throw ValidationException::withMessages([
                 'responsible' => __('Неверный формат данных.'),
             ]);

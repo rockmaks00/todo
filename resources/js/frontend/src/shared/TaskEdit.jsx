@@ -11,7 +11,7 @@ import propTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { useStateContext } from '../contexts/ContextProvider'
 
-const TaskEdit = ({ id, open, handleClose, handleSave }) => {
+const TaskEdit = ({ id, open, handleClose }) => {
   const { axiosClient } = useStateContext()
   const [task, setTask] = useState({})
   const [users, setUsers] = useState([])
@@ -42,6 +42,28 @@ const TaskEdit = ({ id, open, handleClose, handleSave }) => {
       setLoadedId(id)
     }
   }, [id, open, loadedId])
+
+  const handleSave = () => {
+    if (task.id) {
+      axiosClient
+        .put('/tasks', task)
+        .then(() => {
+          handleClose()
+        })
+        .error((e) => {
+          throw new Error(e)
+        })
+    } else {
+      axiosClient
+        .post('/tasks', task)
+        .then(() => {
+          handleClose()
+        })
+        .error((e) => {
+          throw new Error(e)
+        })
+    }
+  }
 
   const handleChange = (value) => {
     setTask((oldTask) => {

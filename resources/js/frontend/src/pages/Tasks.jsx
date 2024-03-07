@@ -26,11 +26,6 @@ export default function Tasks() {
     setOpen(false)
   }
 
-  const handleSave = () => {
-    
-    handleClose()
-  }
-
   const handleGroup = (group) => {
     setGroup(group)
   }
@@ -86,12 +81,7 @@ export default function Tasks() {
           )
         })}
       </div>
-      <TaskEdit
-        id={id}
-        open={open}
-        handleClose={handleClose}
-        handleSave={handleSave}
-      />
+      <TaskEdit id={id} open={open} handleClose={handleClose} />
     </Container>
   )
 }
