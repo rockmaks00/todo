@@ -12,14 +12,14 @@ import { useEffect, useState } from 'react'
 import { useStateContext } from '../contexts/ContextProvider'
 
 const TaskEdit = ({ id, open, handleClose }) => {
-  const { axiosClient } = useStateContext()
+  const { user, axiosClient } = useStateContext()
   const [task, setTask] = useState({})
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadedId, setLoadedId] = useState(null)
 
   useEffect(() => {
-    if (open && id !== loadedId) {
+    if (open && (!id || id !== loadedId)) {
       setLoading(true)
 
       // загружаем возможных подчиненных
@@ -86,6 +86,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           fullWidth
           value={task.header}
           onChange={(e) => handleChange({ header: e.target.value })}
+          disabled={task.creator != user.id}
         />
         <TextField
           margin="dense"
@@ -96,6 +97,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           maxRows={4}
           value={task.description}
           onChange={(e) => handleChange({ description: e.target.value })}
+          disabled={task.creator != user.id}
         />
         <TextField
           fullWidth
@@ -104,6 +106,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           value={task.priority}
           label="Приоритет"
           onChange={(e) => handleChange({ priority: e.target.value })}
+          disabled={task.creator != user.id}
         >
           <MenuItem value="1">Низкий</MenuItem>
           <MenuItem value="2">Средний</MenuItem>
@@ -119,6 +122,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
             shrink: true,
           }}
           onChange={(e) => handleChange({ deadline: e.target.value })}
+          disabled={task.creator != user.id}
         />
         <TextField
           label="Ответственный"
@@ -127,6 +131,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           fullWidth
           margin="dense"
           onChange={(e) => handleChange({ responsible: e.target.value })}
+          disabled={task.creator != user.id}
         >
           {users.map((user) => {
             return (

@@ -9,13 +9,13 @@ use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
-    /**
-     * Возвращает подчиненных
-     *
-     * @param integer|null $taskId если указать номер задачи, то добавляет ответственного за неё
-     * @param Request $request
-     * @return Response
-     */
+    public function get(): Response
+    {
+        $users = User::select('id', 'name', 'surname')->get();
+
+        return response($users);
+    }
+
     public function getSubordinates(Request $request): Response
     {
         /** @var User */

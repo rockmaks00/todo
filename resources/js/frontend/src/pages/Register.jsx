@@ -6,11 +6,19 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { MenuItem } from '@mui/material'
 import { useStateContext } from '../contexts/ContextProvider'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Register() {
   const { axiosClient, setUser, setToken } = useStateContext()
-  const [error, setErrors] = useState()
+  const [error, setErrors] = useState({})
+  const [users, setUsers] = useState([])
+  const [leader, setLeader] = useState(0)
+
+  useEffect(() => {
+    axiosClient.get('/users').then(({ data }) => {
+      setUsers(data)
+    })
+  }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -23,7 +31,7 @@ export default function Register() {
       email: data.get('email'),
       password: data.get('password'),
       password_confirmation: data.get('passwordConfirm'),
-      leader: data.get('leader'),
+      leader: leader,
     }
 
     axiosClient
@@ -120,12 +128,19 @@ export default function Register() {
           fullWidth
           id="leader"
           select
-          value={0}
+          value={leader}
           label="Руководитель"
           sx={{ mt: 2 }}
+          onChange={(e) => setLeader(e.target.value)}
         >
           <MenuItem value={0}>Не выбрано</MenuItem>
-          <MenuItem value={1}>Камогус Камогусович Камсваловский</MenuItem>
+          {users.map((user) => {
+            return (
+              <MenuItem key={user.id} value={user.id}>
+                {`${user.name} ${user.surname}`}
+              </MenuItem>
+            )
+          })}
         </TextField>
         <Button
           type="submit"
