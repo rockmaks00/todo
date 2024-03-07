@@ -11,24 +11,34 @@ use App\Static\Enumerables\Priority;
 use App\Static\Enumerables\Status;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 
 class TaskController extends Controller
 {
     /**
-     * Заполняет указанные поля с помощью enum / по возможности вынести в сериализатор
-     *
-     * @param array $enums ['modelField' => 'ENumClass']
+     * Подготовка данных для отправки
+     * по возможности вынести в репозиторий
      */
-    public static function setEnums(array $model, array $enums): array
+    public static function prepareData(array $tasks): array
     {
-        foreach ($enums as $key => $name) {
-            $enum = ($name)::from($model[$key]);
-            $model[$key] = [
-                'id' => $enum->value,
-                'name' => $enum->label(),
-            ];
+        $enums = [
+            'status' => Status::class,
+            'priority' => Priority::class
+        ];
+
+        foreach ($tasks as &$task) {
+            foreach ($enums as $key => $name) {
+                $enum = ($name)::from($task[$key]);
+                $task[$key] = [
+                    'id' => $enum->value,
+                    'name' => $enum->label(),
+                ];
+
+                $task['deadline'] = date('d.m.Y', strtotime($task['deadline']));
+            }
         }
-        return $model;
+
+        return $tasks;
     }
 
     public function get(Request $request): Response
@@ -41,14 +51,7 @@ class TaskController extends Controller
             ->get()
             ->toArray();
 
-        foreach ($tasks as &$task) {
-            $task = static::setEnums($task, [
-                'status' => Status::class,
-                'priority' => Priority::class
-            ]);
-            $task['deadline'] = date('d.m.Y', strtotime($task['deadline']));
-        }
-
+        $tasks = static::prepareData($tasks);
         return response($tasks);
     }
 
@@ -98,5 +101,51 @@ class TaskController extends Controller
         }
 
         return response(status: 403);
+    }
+
+    public function getGroupedByDeadline(Request $request): Response
+    {
+        $userId = $request->user()->id;
+        $today = Carbon::today();
+        $week = Carbon::today()->addWeek();
+
+        $tasks = Task::where('responsible', $userId)
+            ->with('responsible')
+            ->get()
+            ->groupBy(function ($task) use ($today, $week) {
+                $deadline = Carbon::createFromFormat('Y-m-d H:i:s', $task->deadline);
+
+                if ($deadline->isSameDay($today) || $deadline->isPast()) {
+                    return 'today';
+                } elseif ($deadline->isBetween($today, $week)) {
+                    return 'week';
+                } else {
+                    return 'future';
+                }
+            })
+            ->toArray();
+
+        foreach ($tasks as $group => $taskList) {
+            $tasks[$group] = static::prepareData($taskList);
+        }
+
+        return response($tasks);
+    }
+
+    public function getGroupedByResponsible(Request $request): Response
+    {
+        $userId = $request->user()->id;
+        $tasks = Task::where('responsible', $userId)
+            ->orWhere('creator', $userId)
+            ->with('responsible')
+            ->get()
+            ->groupBy('responsible')
+            ->toArray();
+
+        foreach ($tasks as $group => $taskList) {
+            $tasks[$group] = static::prepareData($taskList);
+        }
+
+        return response($tasks);
     }
 }

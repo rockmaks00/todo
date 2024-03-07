@@ -9,7 +9,7 @@ Route::controller(UserController::class)
     ->prefix('users')
     ->middleware('auth:sanctum')
     ->group(function () {
-        Route::get('/', 'get');
+        Route::get('/subordinates', 'getSubordinates');
         Route::get('/self', 'getSelf');
     });
 
@@ -18,6 +18,8 @@ Route::controller(TaskController::class)
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::get('/', 'get');
+        Route::get('/group/deadline', 'getGroupedByDeadline');
+        Route::get('/group/responsible', 'getGroupedByResponsible');
         Route::get('/{id}', 'getTask');
         Route::post('/', 'create');
         Route::put('/', 'update');

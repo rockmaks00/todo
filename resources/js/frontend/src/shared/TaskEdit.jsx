@@ -19,14 +19,15 @@ const TaskEdit = ({ id, open, handleClose }) => {
   const [loadedId, setLoadedId] = useState(null)
 
   useEffect(() => {
-    axiosClient.get(`/users`).then(({ data }) => {
-      setUsers(data)
-    })
-  }, [])
-
-  useEffect(() => {
     if (open && id !== loadedId) {
       setLoading(true)
+
+      // загружаем возможных подчиненных
+      axiosClient.get('/users/subordinates').then(({ data }) => {
+        setUsers(data)
+      })
+
+      // если определен id то загружаем, иначе создаём новую
       if (id) {
         axiosClient.get(`/tasks/${id}`).then(({ data }) => {
           setTask(data)
@@ -166,7 +167,6 @@ TaskEdit.propTypes = {
   id: propTypes.number,
   open: propTypes.bool.isRequired,
   handleClose: propTypes.func.isRequired,
-  handleSave: propTypes.func.isRequired,
 }
 
 export default TaskEdit

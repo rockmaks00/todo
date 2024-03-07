@@ -1,8 +1,8 @@
 import { Button, Container } from '@mui/material'
-import TaskCard from '../shared/TaskCard'
 import { useEffect, useState } from 'react'
 import TaskEdit from '../shared/TaskEdit'
 import { useStateContext } from '../contexts/ContextProvider'
+import TaskGroup from '../shared/TaskGroup'
 
 export default function Tasks() {
   const { axiosClient } = useStateContext()
@@ -12,10 +12,16 @@ export default function Tasks() {
   const [group, setGroup] = useState('none')
 
   useEffect(() => {
-    axiosClient.get('/tasks').then(({ data }) => {
-      setTasks(data)
-    })
-  }, [])
+    if (open === false) {
+      let url = '/tasks'
+      if (group !== 'none') {
+        url += `/group/${group}`
+      }
+      axiosClient.get(url).then(({ data }) => {
+        setTasks(data)
+      })
+    }
+  }, [open, group])
 
   const handleOpen = (id) => {
     setOpen(true)
@@ -24,10 +30,6 @@ export default function Tasks() {
 
   const handleClose = () => {
     setOpen(false)
-  }
-
-  const handleGroup = (group) => {
-    setGroup(group)
   }
 
   return (
@@ -49,37 +51,32 @@ export default function Tasks() {
         </Button>
         <Button
           variant={group === 'deadline' ? 'contained' : 'outlined'}
-          onClick={() => handleGroup('deadline')}
+          onClick={() => setGroup('deadline')}
         >
           По дате завершения
         </Button>
         <Button
           variant={group === 'responsible' ? 'contained' : 'outlined'}
-          onClick={() => handleGroup('responsible')}
+          onClick={() => setGroup('responsible')}
         >
           По ответственным
         </Button>
         <Button
           variant={group === 'none' ? 'contained' : 'outlined'}
-          onClick={() => handleGroup('none')}
+          onClick={() => setGroup('none')}
         >
           Без группировок
         </Button>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        {tasks.map((task) => {
-          return (
-            <TaskCard
-              key={task.id}
-              handleClick={() => handleOpen(task.id)}
-              header={task.header}
-              priority={task.priority}
-              deadline={task.deadline}
-              assignee={`${task.responsible.name} ${task.responsible.surname}`}
-              status={task.status}
-            />
-          )
-        })}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          maxWidth: '1280px',
+          flexWrap: 'wrap',
+        }}
+      >
+        <TaskGroup tasks={tasks} handleOpen={handleOpen} />
       </div>
       <TaskEdit id={id} open={open} handleClose={handleClose} />
     </Container>

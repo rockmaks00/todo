@@ -9,10 +9,22 @@ use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
-    public function get(): Response
+    /**
+     * Возвращает подчиненных
+     *
+     * @param integer|null $taskId если указать номер задачи, то добавляет ответственного за неё
+     * @param Request $request
+     * @return Response
+     */
+    public function getSubordinates(Request $request): Response
     {
-        $users = User::select('id', 'name', 'surname')->get();
-        return response($users);
+        /** @var User */
+        $user = $request->user();
+
+        $subordinates = $user->subordinates()->get();
+        $subordinates[] = $user;
+
+        return response($subordinates);
     }
 
     public function getSelf(Request $request): Response

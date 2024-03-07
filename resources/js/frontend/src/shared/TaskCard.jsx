@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography } from '@mui/material'
 import propTypes from 'prop-types'
+import { parse } from 'date-fns'
 
 const TaskCard = ({
   handleClick,
@@ -11,7 +12,7 @@ const TaskCard = ({
 }) => {
   const getColor = (deadline, status) => {
     const currentDate = new Date()
-    const taskDeadline = new Date(deadline)
+    const taskDeadline = parse(deadline, 'dd.MM.yyyy', new Date())
 
     if (status.name === 'Выполнена') {
       return 'green'
@@ -24,7 +25,7 @@ const TaskCard = ({
 
   return (
     <div onClick={handleClick}>
-      <Card sx={{ maxWidth: 275, margin: 2 }}>
+      <Card sx={{ width: 350, margin: 2 }}>
         <CardContent>
           <Typography
             gutterBottom
