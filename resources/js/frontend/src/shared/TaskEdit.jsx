@@ -76,6 +76,10 @@ const TaskEdit = ({ id, open, handleClose }) => {
     return null
   }
 
+  const canEdit = () => {
+    return !id || task.creator === user.id
+  }
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{id ? 'Редактирование' : 'Создание'} задачи</DialogTitle>
@@ -86,7 +90,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           fullWidth
           value={task.header}
           onChange={(e) => handleChange({ header: e.target.value })}
-          disabled={task.creator != user.id}
+          disabled={!canEdit()}
         />
         <TextField
           margin="dense"
@@ -97,7 +101,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           maxRows={4}
           value={task.description}
           onChange={(e) => handleChange({ description: e.target.value })}
-          disabled={task.creator != user.id}
+          disabled={!canEdit()}
         />
         <TextField
           fullWidth
@@ -106,7 +110,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           value={task.priority}
           label="Приоритет"
           onChange={(e) => handleChange({ priority: e.target.value })}
-          disabled={task.creator != user.id}
+          disabled={!canEdit()}
         >
           <MenuItem value="1">Низкий</MenuItem>
           <MenuItem value="2">Средний</MenuItem>
@@ -122,7 +126,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
             shrink: true,
           }}
           onChange={(e) => handleChange({ deadline: e.target.value })}
-          disabled={task.creator != user.id}
+          disabled={!canEdit()}
         />
         <TextField
           label="Ответственный"
@@ -131,7 +135,7 @@ const TaskEdit = ({ id, open, handleClose }) => {
           fullWidth
           margin="dense"
           onChange={(e) => handleChange({ responsible: e.target.value })}
-          disabled={task.creator != user.id}
+          disabled={!canEdit()}
         >
           {users.map((user) => {
             return (
